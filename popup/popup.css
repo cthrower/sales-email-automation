@@ -1,0 +1,11 @@
+#popup {
+    text-align: center;
+    padding: 10px;
+  }
+  
+  button {
+    margin: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
