@@ -10,17 +10,21 @@
       "notifications",
       "activeTab"
     ],
+    "host_permissions": [
+      "https://*.capsulecrm.com/*",
+      "https://*.zapier.com/*"
+    ],
     "background": {
       "service_worker": "background.js"
     },
     "action": {
-      "default_popup": "popup/popup.html",
       "default_icon": "assets/icon128.png"
     },
     "content_scripts": [
       {
-        "matches": ["<all_urls>"],
-        "js": ["content.js"]
+        "matches": ["https://*.capsulecrm.com/*"],
+        "js": ["content.js"],
+        "css": ["injected_style.css"]
       }
     ],
     "icons": {
