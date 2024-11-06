@@ -12,7 +12,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   
       const tabs = await new Promise((resolve, reject) => {
 
-        console.log('ya mum', chrome.tabs)
         chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
             if (chrome.runtime.lastError) {
                 reject(chrome.runtime.lastError);
@@ -26,7 +25,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
      return tab.url;
       
     } catch (error) { 
-      console.log('unlucky chief', error)
+      console.log('Error fetching URL', error)
       throw error
     }
   
@@ -37,8 +36,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     const pageURL = await getURL()
     const data = {url:pageURL}
     const zapierWebhookURL = 'https://hooks.zapier.com/hooks/catch/2016169/251pvib/'
-  
-    console.log('test send', pageURL, JSON.stringify(data))
 
     fetch(zapierWebhookURL, {
       method: 'POST',

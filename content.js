@@ -34,7 +34,6 @@ function injectCustomHTML() {
 
   document.getElementById('unanswered').addEventListener('click',()=>{
     removeCustomHTML();
-    console.log('wtf', chrome.runtime);
     chrome.runtime.sendMessage({ action: "sendToZapier" });
   })
 
