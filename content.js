@@ -1,14 +1,17 @@
 // Function to handle checkbox clicks and check if the task is completed
 function handleCheckboxClick(event) {
+  
+  if (window.location.href.includes('opportunity')){
 
-  // Check if the clicked element is a checkbox with the class 'form-checkbox__input'
-  if (event.target.classList.contains('form-checkbox__input')) {
-    console.log('Task marked as complete!')
+   // Check if the clicked element is a checkbox with the class 'form-checkbox__input'
+    if (event.target.classList.contains('form-checkbox__input')) {
+      console.log('Task marked as complete!')
 
-    //only inject html if not already present
-    if (!document.getElementById('custom-injected-popup')){
-      injectCustomHTML();
+      //only inject html if not already present
+      if (!document.getElementById('custom-injected-popup')){
+        injectCustomHTML();
 
+      }
     }
   }
 }
