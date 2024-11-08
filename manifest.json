@@ -1,13 +1,10 @@
 {
     "manifest_version": 3,
     "name": "Capsule CRM Call Follow-up",
-    "version": "1.0",
+    "version": "1.3",
     "description": "Automate follow-up actions for unanswered calls in Capsule CRM.",
     "permissions": [
-      "scripting",
       "tabs",
-      "storage",
-      "notifications",
       "activeTab"
     ],
     "host_permissions": [
