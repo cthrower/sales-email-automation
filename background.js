@@ -58,4 +58,8 @@
     }
   })
 
+  function handleUrlChange(details) {
+    chrome.tabs.sendMessage(details.tabId, { action: "urlChanged" });
+  }
+
   
