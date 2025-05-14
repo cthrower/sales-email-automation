@@ -1,57 +1,78 @@
 /* Overlay style to center the injected content */
 #custom-injected-popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  position: fixed;
+}
   
-  /* Larger content box in the center */
-  .injected-content {
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    text-align: center;
-    width: 300px;  /* Increased width */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
+/* Larger content box in the center */
+.injected-content {
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  width: 300px;  /* Increased width */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: white;
+}
   
-  /* Larger text for the question */
-  .injected-content p {
-    font-size: 1.5em;  /* Make the text larger */
-    margin-bottom: 20px;
-  }
+/* Larger text for the question */
+.injected-content p {
+  font-size: 1.5em;  /* Make the text larger */
+  margin-bottom: 20px;
+}
   
-  /* Green Yes button */
-  #answered {
-    background-color: green;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    margin: 5px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+/* Green Yes button */
+#answered {
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: green;
+}
   
-  /* Red No button */
-  #unanswered {
-    background-color: red;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    margin: 5px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+/* Red No button */
+#unanswered {
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: red;
+}
+
+#cut-off {
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: green;
+}
+
+#not-cut-off {
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: red;
+}
+
   
-  /* Button hover effect for clarity */
-  #answered:hover, #unanswered:hover {
-    opacity: 0.9;
-  }
+/* Button hover effect for clarity */
+#answered:hover, #unanswered:hover {
+  opacity: 0.9;
+}
   
