@@ -5,22 +5,25 @@
     "description": "Automate follow-up actions for unanswered calls in Capsule CRM.",
     "permissions": [
       "tabs",
-      "activeTab"
+      "activeTab",
+      "storage"
     ],
     "host_permissions": [
       "https://*.capsulecrm.com/*",
-      "https://*.zapier.com/*"
+      "https://api.datasoap.co.uk/*"
     ],
     "background": {
-      "service_worker": "background.js"
+      "service_worker": "background.js",
+      "type": "module"
     },
     "action": {
-      "default_icon": "assets/icon128.png"
+      "default_icon": "assets/icon128.png",
+      "default_popup": "popup.html"
     },
     "content_scripts": [
       {
         "matches": ["https://*.capsulecrm.com/*"],
-        "js": ["content.js"],
+        "js": ["helpers/capsule-helper.js", "content.js"],
         "css": ["injected_style.css"]
       }
     ],
