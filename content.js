@@ -19,17 +19,9 @@ async function handleCheckboxClick(event) {
           const lastAutoSmsDate = await window.CapsuleHelper.getLastAutoSmsDate(actualPartyId);
           const response = await window.CapsuleHelper.getCapsulePartyData(actualPartyId);
 
-          // Check if phone number exists and is a mobile number
+          // Check if a mobile phone number was found
+          // getCapsulePartyData now returns the first mobile number found, or null if none
           if (!response.phone) {
-            window.alert("Phone number not found");
-            return;
-          }
-
-          // Normalize phone number (remove spaces, dashes, parentheses, plus signs, etc.)
-          const normalizedPhone = response.phone.replace(/[\s\-\(\)+]/g, '');
-          
-          // Check if it's a mobile number (starts with 07 or 447)
-          if (!normalizedPhone.startsWith('07') && !normalizedPhone.startsWith('447')) {
             window.alert("Cannot send SMS: Phone number is not a mobile number");
             return;
           }

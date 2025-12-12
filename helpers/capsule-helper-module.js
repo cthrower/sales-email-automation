@@ -4,6 +4,28 @@
 // Since we can't import from a non-module file, we'll duplicate the functions here
 // but they're the same implementation
 
+function findFirstMobileNumber(phoneNumbers) {
+    if (!phoneNumbers || phoneNumbers.length === 0) {
+        return null;
+    }
+
+    // Iterate through all phone numbers to find the first mobile number
+    for (const phoneObj of phoneNumbers) {
+        if (phoneObj && phoneObj.number) {
+            // Normalize phone number (remove spaces, dashes, parentheses, plus signs, etc.)
+            const normalizedPhone = phoneObj.number.replace(/[\s\-\(\)+]/g, '');
+            
+            // Check if it's a mobile number (starts with 07 or 447)
+            if (normalizedPhone.startsWith('07') || normalizedPhone.startsWith('447')) {
+                return phoneObj.number; // Return the original number (not normalized)
+            }
+        }
+    }
+
+    // No mobile number found
+    return null;
+}
+
 export async function getCapsulePartyData(partyId, capsuleApiKey) {
     const response = await fetch(`https://api.capsulecrm.com/api/v2/parties/${partyId}?embed=fields`, {
         headers: {
@@ -24,12 +46,8 @@ export async function getCapsulePartyData(partyId, capsuleApiKey) {
         ? data.party.emailAddresses[0].address
         : null;
 
-    // Safely extract phone if it exists
-    const phone = data.party.phoneNumbers &&
-        data.party.phoneNumbers.length > 0 &&
-        data.party.phoneNumbers[0].number
-        ? data.party.phoneNumbers[0].number
-        : null;
+    // Find first mobile number from all phone numbers
+    const phone = findFirstMobileNumber(data.party.phoneNumbers);
 
     const firstName = data.party.firstName;
 

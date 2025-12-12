@@ -18,6 +18,28 @@ async function getCapsuleApiKey() {
     });
 }
 
+function findFirstMobileNumber(phoneNumbers) {
+    if (!phoneNumbers || phoneNumbers.length === 0) {
+        return null;
+    }
+
+    // Iterate through all phone numbers to find the first mobile number
+    for (const phoneObj of phoneNumbers) {
+        if (phoneObj && phoneObj.number) {
+            // Normalize phone number (remove spaces, dashes, parentheses, plus signs, etc.)
+            const normalizedPhone = phoneObj.number.replace(/[\s\-\(\)+]/g, '');
+            
+            // Check if it's a mobile number (starts with 07 or 447)
+            if (normalizedPhone.startsWith('07') || normalizedPhone.startsWith('447')) {
+                return phoneObj.number; // Return the original number (not normalized)
+            }
+        }
+    }
+
+    // No mobile number found
+    return null;
+}
+
 async function getCapsulePartyData(partyId, capsuleApiKey) {
     // If no API key provided, fetch it automatically
     if (!capsuleApiKey) {
@@ -43,12 +65,8 @@ async function getCapsulePartyData(partyId, capsuleApiKey) {
         ? data.party.emailAddresses[0].address
         : null;
 
-    // Safely extract phone if it exists
-    const phone = data.party.phoneNumbers &&
-        data.party.phoneNumbers.length > 0 &&
-        data.party.phoneNumbers[0].number
-        ? data.party.phoneNumbers[0].number
-        : null;
+    // Find first mobile number from all phone numbers
+    const phone = findFirstMobileNumber(data.party.phoneNumbers);
 
     const firstName = data.party.firstName;
 
