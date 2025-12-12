@@ -82,6 +82,68 @@ async function getLastAutoSmsDate(partyId, capsuleApiKey) {
     return lastAutoSmsDate;
 }
 
+async function getPartyType(partyId, capsuleApiKey) {
+    // If no API key provided, fetch it automatically
+    if (!capsuleApiKey) {
+        capsuleApiKey = await getCapsuleApiKey();
+    }
+
+    const response = await fetch(`https://api.capsulecrm.com/api/v2/parties/${partyId}`, {
+        headers: {
+            'Authorization': `Bearer ${capsuleApiKey}`
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Return the party type (either "organisation" or "person")
+    if (data.party && data.party.type) {
+        return data.party.type;
+    } else {
+        throw new Error('Party type not found in response');
+    }
+}
+
+async function getFirstPersonFromOrganisation(organisationId, capsuleApiKey) {
+    // If no API key provided, fetch it automatically
+    if (!capsuleApiKey) {
+        capsuleApiKey = await getCapsuleApiKey();
+    }
+
+    const response = await fetch(`https://api.capsulecrm.com/api/v2/parties/${organisationId}/people`, {
+        headers: {
+            'Authorization': `Bearer ${capsuleApiKey}`
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Return the first person's data (id, phone, etc.)
+    if (data.parties && data.parties.length > 0) {
+        return data.parties[0];
+    }
+
+    return null;
+}
+
+async function getFirstPersonPhoneFromOrganisation(organisationId, capsuleApiKey) {
+    const firstPerson = await getFirstPersonFromOrganisation(organisationId, capsuleApiKey);
+    
+    if (firstPerson && firstPerson.phoneNumbers && firstPerson.phoneNumbers.length > 0) {
+        return firstPerson.phoneNumbers[0].number;
+    }
+
+    return null;
+}
+
 async function getPartyIdFromOpportunity(opportunityId, capsuleApiKey) {
     // If no API key provided, fetch it automatically
     if (!capsuleApiKey) {
@@ -154,6 +216,9 @@ if (typeof window !== 'undefined') {
     window.CapsuleHelper.getCapsuleApiKey = getCapsuleApiKey;
     window.CapsuleHelper.getCapsulePartyData = getCapsulePartyData;
     window.CapsuleHelper.getLastAutoSmsDate = getLastAutoSmsDate;
+    window.CapsuleHelper.getPartyType = getPartyType;
+    window.CapsuleHelper.getFirstPersonFromOrganisation = getFirstPersonFromOrganisation;
+    window.CapsuleHelper.getFirstPersonPhoneFromOrganisation = getFirstPersonPhoneFromOrganisation;
     window.CapsuleHelper.getPartyIdFromOpportunity = getPartyIdFromOpportunity;
     window.CapsuleHelper.updateLastAutoSmsDate = updateLastAutoSmsDate;
 }

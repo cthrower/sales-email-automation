@@ -12,9 +12,12 @@ async function handleCheckboxClick(event) {
       
       if (partyId) {
         try {
-          // Check the last auto SMS date
-          const lastAutoSmsDate = await window.CapsuleHelper.getLastAutoSmsDate(partyId);
-          const response = await window.CapsuleHelper.getCapsulePartyData(partyId);
+          // Get the actual party ID (person ID) - handles organisations
+          const actualPartyId = await getActualPartyIdForContact(partyId);
+          
+          // Check the last auto SMS date using the actual party ID (person)
+          const lastAutoSmsDate = await window.CapsuleHelper.getLastAutoSmsDate(actualPartyId);
+          const response = await window.CapsuleHelper.getCapsulePartyData(actualPartyId);
 
           // Check if phone number exists and is a mobile number
           if (!response.phone) {
@@ -38,8 +41,13 @@ async function handleCheckboxClick(event) {
             }
           }
         } catch (error) {
-          console.error("Error checking last auto SMS date:", error);
-          // Continue with popup if there's an error checking the date
+          console.error("Error checking party data:", error);
+          // If we can't get person from organisation, alert and return
+          if (error.message && error.message.includes("No people found")) {
+            window.alert(error.message);
+            return;
+          }
+          // Continue with popup if there's an error checking the date (other errors)
         }
       }
 
@@ -319,8 +327,47 @@ async function getPartyIdFromUrl() {
   return null;
 }
 
+async function getActualPartyIdForContact(partyId) {
+  // Check if party is an organisation or person
+  const partyType = await window.CapsuleHelper.getPartyType(partyId);
+  
+  // If it's an organisation, get the first person's ID
+  if (partyType === "organisation") {
+    const firstPerson = await window.CapsuleHelper.getFirstPersonFromOrganisation(partyId);
+    if (!firstPerson || !firstPerson.id) {
+      throw new Error("No people found in organisation");
+    }
+    return firstPerson.id.toString();
+  }
+  
+  // If it's a person, return the party ID as is
+  return partyId;
+}
+
 async function sendOptionToBackend(selectedOption, submitButton, salesPerson) {
   const partyId = await getPartyIdFromUrl();
+  
+  if (!partyId) {
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = "Submit";
+    }
+    displayMessage("Error: Could not determine party ID", false);
+    return;
+  }
+  
+  // Get the actual party ID (person ID) - handles organisations
+  let actualPartyId;
+  try {
+    actualPartyId = await getActualPartyIdForContact(partyId);
+  } catch (error) {
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = "Submit";
+    }
+    displayMessage("Error: " + error.message, false);
+    return;
+  }
   
   // Check if chrome.runtime is available
   if (!chrome || !chrome.runtime) {
@@ -337,7 +384,7 @@ async function sendOptionToBackend(selectedOption, submitButton, salesPerson) {
       action: "sendOptionToBackend",
       data: {
         option: selectedOption,
-        partyId: partyId,
+        partyId: actualPartyId,
         salesPerson: salesPerson
       }
     }, (response) => {
@@ -372,6 +419,28 @@ async function sendOptionToBackend(selectedOption, submitButton, salesPerson) {
 async function sendCustomMessageToBackend(customMessage, submitButton) {
   const partyId = await getPartyIdFromUrl();
   
+  if (!partyId) {
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = "Submit";
+    }
+    displayMessage("Error: Could not determine party ID", false);
+    return;
+  }
+  
+  // Get the actual party ID (person ID) - handles organisations
+  let actualPartyId;
+  try {
+    actualPartyId = await getActualPartyIdForContact(partyId);
+  } catch (error) {
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = "Submit";
+    }
+    displayMessage("Error: " + error.message, false);
+    return;
+  }
+  
   // Check if chrome.runtime is available
   if (!chrome || !chrome.runtime) {
     if (submitButton) {
@@ -387,7 +456,7 @@ async function sendCustomMessageToBackend(customMessage, submitButton) {
       action: "sendCustomMessageToBackend",
       data: {
         message: customMessage,
-        partyId: partyId
+        partyId: actualPartyId
       }
     }, (response) => {
       // Reset button state
