@@ -82,6 +82,32 @@ async function getLastAutoSmsDate(partyId, capsuleApiKey) {
     return lastAutoSmsDate;
 }
 
+async function getPartyIdFromOpportunity(opportunityId, capsuleApiKey) {
+    // If no API key provided, fetch it automatically
+    if (!capsuleApiKey) {
+        capsuleApiKey = await getCapsuleApiKey();
+    }
+
+    const response = await fetch(`https://api.capsulecrm.com/api/v2/opportunities/${opportunityId}?embed=party`, {
+        headers: {
+            'Authorization': `Bearer ${capsuleApiKey}`
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Extract party ID from the response
+    if (data.opportunity && data.opportunity.party && data.opportunity.party.id) {
+        return data.opportunity.party.id.toString();
+    } else {
+        throw new Error('Party ID not found in opportunity response');
+    }
+}
+
 async function updateLastAutoSmsDate(partyId, capsuleApiKey) {
     // If no API key provided, fetch it automatically
     if (!capsuleApiKey) {
@@ -125,7 +151,9 @@ async function updateLastAutoSmsDate(partyId, capsuleApiKey) {
 // Make available globally for content.js (non-module context)
 if (typeof window !== 'undefined') {
     window.CapsuleHelper = window.CapsuleHelper || {};
+    window.CapsuleHelper.getCapsuleApiKey = getCapsuleApiKey;
     window.CapsuleHelper.getCapsulePartyData = getCapsulePartyData;
     window.CapsuleHelper.getLastAutoSmsDate = getLastAutoSmsDate;
+    window.CapsuleHelper.getPartyIdFromOpportunity = getPartyIdFromOpportunity;
     window.CapsuleHelper.updateLastAutoSmsDate = updateLastAutoSmsDate;
 }

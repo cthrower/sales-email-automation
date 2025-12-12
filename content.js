@@ -8,7 +8,7 @@ async function handleCheckboxClick(event) {
       }
 
       // Get party ID from URL
-      const partyId = getPartyIdFromUrl();
+      const partyId = await getPartyIdFromUrl();
       
       if (partyId) {
         try {
@@ -290,20 +290,37 @@ function displayMessage(message, isSuccess) {
   }
 }
 
-function getPartyIdFromUrl() {
+async function getPartyIdFromUrl() {
   const url = window.location.href;
-  const regex = /\/party\/([^\/]+)/;
-  const match = url.match(regex);
   
-  if (match && match[1]) {
-    return match[1];
+  // First, try to get party ID directly from URL
+  const partyRegex = /\/party\/([^\/]+)/;
+  const partyMatch = url.match(partyRegex);
+  
+  if (partyMatch && partyMatch[1]) {
+    return partyMatch[1];
+  }
+  
+  // If no party ID in URL, check if it's an opportunity URL
+  const opportunityRegex = /\/opportunity\/([^\/]+)/;
+  const opportunityMatch = url.match(opportunityRegex);
+  
+  if (opportunityMatch && opportunityMatch[1]) {
+    const opportunityId = opportunityMatch[1];
+    
+    try {
+      return await window.CapsuleHelper.getPartyIdFromOpportunity(opportunityId);
+    } catch (error) {
+      console.error('Error fetching party ID from opportunity:', error);
+      return null;
+    }
   }
   
   return null;
 }
 
-function sendOptionToBackend(selectedOption, submitButton, salesPerson) {
-  const partyId = getPartyIdFromUrl();
+async function sendOptionToBackend(selectedOption, submitButton, salesPerson) {
+  const partyId = await getPartyIdFromUrl();
   
   // Check if chrome.runtime is available
   if (!chrome || !chrome.runtime) {
@@ -352,8 +369,8 @@ function sendOptionToBackend(selectedOption, submitButton, salesPerson) {
   }
 }
 
-function sendCustomMessageToBackend(customMessage, submitButton) {
-  const partyId = getPartyIdFromUrl();
+async function sendCustomMessageToBackend(customMessage, submitButton) {
+  const partyId = await getPartyIdFromUrl();
   
   // Check if chrome.runtime is available
   if (!chrome || !chrome.runtime) {
