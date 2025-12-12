@@ -110,7 +110,6 @@ async function updateLastAutoSmsDate(partyId, capsuleApiKey) {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            method: 'PUT',
             'Authorization': `Bearer ${capsuleApiKey}`
         },
         body: JSON.stringify(body)

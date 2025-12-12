@@ -18,7 +18,7 @@ export async function sendOptionSms(phone, option, firstName, salesPerson, datas
         if (option === "option1") {
             message = "Hi " + firstName + ". Thank you for your interest in Phonely. \n\nI just tried to call but couldn't reach you. Don't worry — I'll try calling you back soon! In the meantime, if you'd like to chat or have any questions, I'm ready to help — just give me a ring on 0800 112 5000.\n\nLooking forward to speaking with you!\n\nWarm regards,\n" + salesPerson + "- Phonely";
         } else if (option === "option2") {
-            message = "Hi " + firstName + ". I received an enquiry for a digital landline service, and just tried to call to discuss it. If you are wondering how this can work for you or how much this would cost, please get back in touch on 0800 112 500.\n\nLooking forward to speaking with you!\n\nWarm regards,\n" + salesPerson + "- Phonely";
+            message = "Hi " + firstName + ". I received an enquiry for a digital landline service, and just tried to call to discuss it. If you are wondering how this can work for you or how much this would cost, please get back in touch on 0800 112 5000.\n\nLooking forward to speaking with you!\n\nWarm regards,\n" + salesPerson + "- Phonely";
         } else if (option === "option3") {
             message = "Hi " + firstName + ". I have tried to get in touch a few times but haven't been able to reach you. Please could you let me know a good time to call you back? Or you can book a call in using this link: https://calendly.com/phonely_uk/callback .\n\nLooking forward to speaking with you!\n\nWarm regards,\n" + salesPerson + "- Phonely";
         }
